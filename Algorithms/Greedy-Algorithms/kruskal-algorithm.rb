@@ -3,9 +3,9 @@ class Graph
       @cities = {}
       @edges = []
     end
-
+  
     def add_city(name)
-        @cities[name] = @cities.length
+      @cities[name] = @cities.length
     end
   
     def add_edge(origin, destination, distance)
@@ -13,11 +13,11 @@ class Graph
     end
   
     def find(parent, element)
-        root = element
-        root = parent[root] while parent[root] != root
-        return root
+      root = element
+      root = parent[root] while parent[root] != root
+      return root
     end
-          
+    
     def union(parent, rank, x, y)
       if rank[x] < rank[y]
         parent[x] = y
@@ -63,48 +63,41 @@ class Graph
         minimum_cost += distance
         puts "#{city_by_index(origin)} -- #{city_by_index(destination)} == #{distance} km"
       end
-      puts "Árvore Geradora Mínima, Custo Mínimo: #{minimum_cost}"
+      puts "Árvore Geradora Mínima, Custo Mínimo: #{minimum_cost} km"
     end
-    
-    private
-
+  
+    public
+  
     def city_by_index(index)
-        @cities.key(index)
+      @cities.key(index)
     end
+  
+    def get_city_data
+      print "Digite o nome da cidade: "
+      name = gets.chomp
+      add_city(name)
+    end 
+  
+    def get_edge_data
+      print "Digite a cidade de origem: "
+      origin = gets.chomp
+      print "Digite a cidade de destino: "
+      destination = gets.chomp
+      print "Qual é a distância em km entre #{origin} e #{destination}: "
+      distance = gets.to_i
+  
+      add_edge(origin, destination, distance)
+    end 
   end
-
-  def get_city_data
-    print "Digite o nome da cidade: "
-    name = gets.chomp
-    name
-  end 
-
-  def get_edge_data(cities)
-    print "Digite a cidade de origem: "
-    origin = gets.chomp
-    print "Digite a cidade de destino: "
-    destination = gets.chomp
-    print "Qual é a distância em km entre #{origin} e #{destination}: "
-    distance = gets.to_i
-
-    [origin, destination, distance]
-  end 
-
+  
   if __FILE__ == $PROGRAM_NAME
     graph = Graph.new
-
+  
     number_cities = 4
-    number_cities.times do
-        city = get_city_data
-        graph.add_city(city)
-    end
+    number_cities.times { graph.get_city_data }
     
-    num_edges = number_cities -1
-    num_edges.times do
-        origin, destination, distance = get_edge_data(graph.cities)
-        graph.add_edge(origin, destination, distance)
-    end
+    num_edges = number_cities - 1
+    num_edges.times { graph.get_edge_data }
   
     graph.kruskal_mst
   end
-  

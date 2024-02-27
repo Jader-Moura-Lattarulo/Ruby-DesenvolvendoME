@@ -12,6 +12,7 @@ def bubble_sort(array)
 
                 puts "Passo #{current_iteration + 1}, Troca #{index + 1}: "
                 puts "#{array.join(', ')}"
+                sleep(5)
             end
         end
 

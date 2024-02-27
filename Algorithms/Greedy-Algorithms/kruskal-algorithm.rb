@@ -1,27 +1,31 @@
 class Graph
-    def initialize(vertices_number)
-      @vertices_number = vertices_number
+    def initialize
+      @cities = {}
       @edges = []
     end
-  
-    def add_edge(origin, destination, weight)
-      @edges << [origin, destination, weight]
+
+    def add_city(name)
+        @cities[name] = @cities.length
     end
   
-    def find(father, element)
+    def add_edge(origin, destination, distance)
+      @edges << [@cities[origin], @cities[destination], distance]
+    end
+  
+    def find(parent, element)
         root = element
-        root = father[root] while father[root] != root
+        root = parent[root] while parent[root] != root
         return root
     end
           
-    def union(father, classification, x, y)
-      if classification[x] < classification[y]
-        father[x] = y
-      elsif classification[x] > classification[y]
-        father[y] = x
+    def union(parent, rank, x, y)
+      if rank[x] < rank[y]
+        parent[x] = y
+      elsif rank[x] > rank[y]
+        parent[y] = x
       else
-        father[y] = x
-        classification[x] += 1
+        parent[y] = x
+        rank[x] += 1
       end
     end
   
@@ -32,44 +36,74 @@ class Graph
   
       @edges = @edges.sort_by { |edge| edge[2] }
   
-      father = []
-      classification = []
+      parent = []
+      rank = []
   
-      (0...@vertices_number).each do |vertex|
-        father << vertex
-        classification << 0
+      (0...@cities.length).each do |vertex|
+        parent << vertex
+        rank << 0
       end
   
-      while index_result < @vertices_number - 1
-        origin, destination, weight = @edges[index_edge]
+      while index_result < @cities.length - 1
+        origin, destination, distance = @edges[index_edge]
         index_edge += 1
-        set_origin = find(father, origin)
-        set_destination = find(father, destination)
+        set_origin = find(parent, origin)
+        set_destination = find(parent, destination)
   
         if set_origin != set_destination
           index_result += 1
-          result << [origin, destination, weight]
-          union(father, classification, set_origin, set_destination)
+          result << [origin, destination, distance]
+          union(parent, rank, set_origin, set_destination)
         end
       end
   
       minimum_cost = 0
       puts "Arestas na MST construída"
-      result.each do |origin, destination, weight|
-        minimum_cost += weight
-        puts "#{origin} -- #{destination} == #{weight}"
+      result.each do |origin, destination, distance|
+        minimum_cost += distance
+        puts "#{city_by_index(origin)} -- #{city_by_index(destination)} == #{distance} km"
       end
       puts "Árvore Geradora Mínima, Custo Mínimo: #{minimum_cost}"
-    end            
+    end
+    
+    private
+
+    def city_by_index(index)
+        @cities.key(index)
+    end
   end
-  
+
+  def get_city_data
+    print "Digite o nome da cidade: "
+    name = gets.chomp
+    name
+  end 
+
+  def get_edge_data(cities)
+    print "Digite a cidade de origem: "
+    origin = gets.chomp
+    print "Digite a cidade de destino: "
+    destination = gets.chomp
+    print "Qual é a distância em km entre #{origin} e #{destination}: "
+    distance = gets.to_i
+
+    [origin, destination, distance]
+  end 
+
   if __FILE__ == $PROGRAM_NAME
-    graph = Graph.new(4)
-    graph.add_edge(0, 1, 10)
-    graph.add_edge(0, 2, 6)
-    graph.add_edge(0, 3, 5)
-    graph.add_edge(1, 3, 15)
-    graph.add_edge(2, 3, 4)
+    graph = Graph.new
+
+    number_cities = 4
+    number_cities.times do
+        city = get_city_data
+        graph.add_city(city)
+    end
+    
+    num_edges = number_cities -1
+    num_edges.times do
+        origin, destination, distance = get_edge_data(graph.cities)
+        graph.add_edge(origin, destination, distance)
+    end
   
     graph.kruskal_mst
   end

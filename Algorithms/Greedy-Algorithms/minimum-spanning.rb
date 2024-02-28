@@ -153,11 +153,33 @@ class MinHeap
     end
 end
 
-
-
-
-
-
-
-
+def get_algorithm_choice
+    puts "Escolha o algoritmo para encontrar a Minimum Spanning Tree:"
+    puts "1. Prim"
+    puts "2. Kruskal"
+    print "Digite o número correspondente ao algoritmo escolhido: "
+    gets.chomp.to_i
 end
+
+algorithm_choice = get_algorithm_choice
+
+g= Graph.new(4)
+g.add_edge(0, 1, 10)
+g.add_edge(0, 2, 6)
+g.add_edge(0, 3, 5)
+g.add_edge(1, 3, 15)
+g.add_edge(2, 3, 4)
+
+minimum_spanning_tree = 
+    case algorithm_choice
+    when 1
+        g.prim
+    when 2
+        g.kruskal
+    else
+        puts "Opção inválida."
+        exit 
+    end
+
+puts "Arestas na árvore mínima de abrangência:"
+minimum_spanning_tree.each { |edge| puts "#{edge[0]} -- #{edge[1]} == #{edge[2]}"}

@@ -80,5 +80,84 @@ class Graph
             parent[xroot] = yroot
 
         elsif rank[xroot] > rank[yroot]
+            parent[yroot] = xroot
+        else 
+            parent[yroot] = xroot
+            rank[xroot] += 1
+        end
+    end
+end
+
+class MinHeap
+    def initialize
+        @heap = []
+    end
+
+    def insert(node)
+        @heap << node
+        heapify_up
+    end
+
+    def extract_min
+        return nil if empty?
+
+        min = @heap[0]
+        last = @heap.pop
+
+        unless empty?
+            @heap[0] = last
+            heapify_down
+        end
+
+        min
+    end
+
+    def empty?
+        @heap.empty?
+    end
+
+    private
+
+    def heapify_up
+        current_index = @heap.size - 1
+
+        while current_index > 0
+            parent_index = (current_index -1) / 2
+
+            break if @heap[current_index][2] >= @heap[parent_index], @heap[current_index]
+            current_index = parent_index
+        end
+    end
+
+    def heapify_down
+        current_index = 0
+
+        while true  
+            left_child_index = 2 * current_index + 1
+            right_child_index = 2 * current_index + 2
+            smallest = current_index    
+
+            if left_child_index < @heap.size && @heap[left_child_index][2] < @heap[smallest[2]]
+                smallest = left_child_index
+            end
+            
+            if right_child_index < @heap.size && @heap[right_child_index][2] < @heap[smallest[2]]
+                smallest = right_child_index
+            end
+
+            break if smallest == current_index
+
+            @heap[current_index], @heap[smallest] = @heap[smallest], @heap[current_index]
+            current_index = smallest
+        end
+    end
+end
+
+
+
+
+
+
+
 
 end
